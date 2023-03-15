@@ -6,12 +6,10 @@ public class Snap extends CardGame{
 
     int playerTwoWins = 0;
     public static void startGame() {
-
-
-        boolean isPlayerOneTurn = true;
+        Player playerOne = new Player("One", true, 0);
+        Player playerTwo = new Player("Two", false, 0);
         CardGame snap = new CardGame();
         snap.getDeckOfCards();
-        snap.shuffleDeck();
         Scanner s = new Scanner(System.in);
         boolean hasSnap = false;
         System.out.println("Initial Setup...");
@@ -20,12 +18,11 @@ public class Snap extends CardGame{
         drawnCards.add(firstCard);
         System.out.println(drawnCards);
         boolean gameOver = false;
-        int playerOneWins = 0;
-        int playerTwoWins = 0;
         while (gameOver == false) {
-
+            snap.shuffleDeck();
             while (hasSnap == false) {
-                isPlayerOneTurn = !isPlayerOneTurn;
+                playerOne.setTurn(!playerOne.isTurn());
+                playerTwo.setTurn(!playerTwo.isTurn());
                 snap.shuffleDeck();
                 System.out.println("Drawn for turn: ");
                 Card drawnCard = snap.dealCard();
@@ -40,13 +37,12 @@ public class Snap extends CardGame{
                     long timeSpentInputting = endTime - startTime;
                     if (input.equals("snap") && timeSpentInputting <= 2000) {
                         hasSnap = true;
-                        if(isPlayerOneTurn){
-                            playerOneWins++;
+                        if (playerOne.isTurn()) {
+                            playerOne.setScore(playerTwo.getScore() + 1);
+                        } else {
+                            playerTwo.setScore(playerTwo.getScore() + 1);
                         }
-                        else {
-                            playerTwoWins++;
-                        }
-                        System.out.println("Snap! " + (isPlayerOneTurn ? "Player one" : "Player two") + " has won :)");
+                        System.out.println("Snap! " + (playerOne.isTurn() ? "Player one" : "Player two") + " has won :)");
                     } else {
                         System.out.println("There was a snap, but you either missed it or wasn't quick enough! Continue");
                     }
@@ -58,8 +54,17 @@ public class Snap extends CardGame{
                 }
 
             }
-            System.out.println("");
-
+            System.out.println("Player one wins: " + playerOne.getScore());
+            System.out.println("Player two wins: " + playerTwo.getScore());
+            System.out.println("Play again? Y/N");
+            String input = s.nextLine().toLowerCase();
+            if(input.equals("y") || input.equals("yes")){
+                System.out.println("Playing again...");
+                hasSnap = false;
+            }
+            else {
+                gameOver = true;
+            }
 
 
         }
