@@ -1,3 +1,5 @@
+import jdk.jshell.execution.Util;
+
 import java.io.Console;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -12,11 +14,10 @@ public class Snap extends CardGame{
         snap.getDeckOfCards();
         Scanner s = new Scanner(System.in);
         boolean hasSnap = false;
-        System.out.println("Initial Setup...");
         System.out.println("Drawing first card:");
         Card firstCard = snap.dealCard();
         drawnCards.add(firstCard);
-        System.out.println(drawnCards);
+        System.out.println(firstCard.toString());
         boolean gameOver = false;
         while (gameOver == false) {
             snap.shuffleDeck();
@@ -25,17 +26,14 @@ public class Snap extends CardGame{
                 playerTwo.setTurn(!playerTwo.isTurn());
                 snap.shuffleDeck();
                 System.out.println("Drawn for turn: ");
-                Card drawnCard = snap.dealCard();
                 String lastCardDrawnInfo = drawnCards.get(drawnCards.size() - 1).toString();
-                drawnCards.add(drawnCard);
-                String cardInfo = drawnCard.toString();
-                System.out.println(lastCardDrawnInfo + " | " + cardInfo);
+                drawnCards.add(snap.dealCard());
+                System.out.println(lastCardDrawnInfo + " | " + drawnCards.get(drawnCards.size() - 1).toString());
                 if (drawnCards.get(drawnCards.size() - 1).getSymbol() == drawnCards.get(drawnCards.size() - 2).getSymbol()) {
                     long startTime = System.currentTimeMillis();
                     String input = s.nextLine().toLowerCase();
                     long endTime = System.currentTimeMillis();
-                    long timeSpentInputting = endTime - startTime;
-                    if (input.equals("snap") && timeSpentInputting <= 2000) {
+                    if (input.equals("snap") && (startTime - endTime) <= 2000) {
                         hasSnap = true;
                         if (playerOne.isTurn()) {
                             playerOne.setScore(playerTwo.getScore() + 1);
@@ -48,25 +46,11 @@ public class Snap extends CardGame{
                     }
                 } else {
                     System.out.printf("No Snap, press enter to continue");
-
                     s.nextLine();
-
                 }
-
             }
-            System.out.println("Player one wins: " + playerOne.getScore());
-            System.out.println("Player two wins: " + playerTwo.getScore());
-            System.out.println("Play again? Y/N");
-            String input = s.nextLine().toLowerCase();
-            if(input.equals("y") || input.equals("yes")){
-                System.out.println("Playing again...");
-                hasSnap = false;
-            }
-            else {
-                gameOver = true;
-            }
-
-
+            hasSnap = false;
+            gameOver = Utils.isNewGame(playerOne.getScore(), playerTwo.getScore());
         }
     }
 }
