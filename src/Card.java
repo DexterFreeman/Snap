@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Comparator;
 
 public class Card {
@@ -39,5 +40,24 @@ public class Card {
     public String toString() {
         return symbol + " " +
                 "of " + suit;
+    }
+
+    public void printCard() {
+        String[] suits = {"♠", "♥", "♦", "♣"};
+        String[] symbols = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"};
+        int suitIndex = Arrays.asList(suits).indexOf(this.suit);
+        int symbolIndex = Arrays.asList(symbols).indexOf(this.symbol);
+        String[][] card = {
+                {"┌──────────┐"},
+                {"│" + this.symbol + "        │"},
+                {"│         │"},
+                {"│    " + suits[suitIndex] + "    │"},
+                {"│         │"},
+                {"│        " + this.symbol + "│"},
+                {"└──────────┘"}
+        };
+        for (String[] row : card) {
+            System.out.println(row[0]);
+        }
     }
 }
